@@ -1,0 +1,12 @@
+[submodule "inja"]
+	path = inja
+	url = https://github.com/pantor/inja
+[submodule "mailclient-cpp"]
+	path = mailclient-cpp
+	url = https://github.com/embeddedmz/mailclient-cpp
+[submodule "curlpp"]
+	path = curlpp
+	url = https://github.com/jpbarrette/curlpp
+[submodule "crow"]
+	path = crow
+	url = https://github.com/CrowCpp/crow
