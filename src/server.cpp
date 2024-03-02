@@ -8,7 +8,7 @@
 #include <string>
 
 webServer::webServer()
-    : app(Session{FileStore{"./tmp/sessiondata"}}) {
+    : app(Session{FileStore{"./tmp/sessiondata"}}) , db("database.db3"){
 
     CROW_CATCHALL_ROUTE(app)([]() {
         std::stringstream ss;
