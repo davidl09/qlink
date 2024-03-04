@@ -43,7 +43,17 @@ cd ../..
 sudo rm -r  sqlpp11
 echo "Successfully installed sqlpp11 system-wide"
 
-echo "Package installation completed."
+git submodule update --init --recursive
+
+echo "Package installation completed. Building..."
+
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+cd ..
+rm -r ./build
+
+
 
 
 
