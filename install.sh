@@ -37,7 +37,7 @@ cd sqlpp11 || exit
 mkdir build
 cd build || echo "Error: could not create build directory"
 cmake -DBUILD_SQLITE3_CONNECTOR=ON -DDEPENDENCY_CHECK=ON -DBUILD_TESTING=OFF ..
-
+sudo make install
 
 cd ../..
 sudo rm -r  sqlpp11
