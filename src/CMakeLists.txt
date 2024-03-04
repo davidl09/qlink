@@ -5,6 +5,7 @@ add_executable(
         server.cpp
 )
 
+
 target_precompile_headers(
         "${PROJECT_NAME}"
         PUBLIC

@@ -7,7 +7,6 @@
 
 #include "defs.h"
 #include "database.hpp"
-#include "curlpp/Options.hpp"
 
 
 class webServer {
@@ -15,13 +14,17 @@ public:
     webServer();
     ~webServer();
 
-    void run(int port, const std::string& dbFile = "db.sql", LogLevel logging = LogLevel::Debug);
+    void run(int port, LogLevel logging = LogLevel::Debug);
     void run_async(int port, LogLevel logging = LogLevel::Debug);
 private:
-    App<CookieParser, Session> app;
+    crow::SimpleApp app;
     Database db;
+    std::unordered_map<std::string, std::string> urlCache;
 
-    static std::string sha256Hash(std::string_view str);
+    static std::string sha256Hash(const std::string& str);
+    static std::string readFileToString(const std::string& filename);
+    static std::string hashURL(const std::string& longUrl);
+
 };
 
 

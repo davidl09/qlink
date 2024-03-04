@@ -22,7 +22,7 @@ using namespace std::chrono_literals;
 namespace ranges = std::ranges;
 namespace chrono = std::chrono;
 namespace nlo = nlohmann;
-
-#define SQL_QSTR(x) #x
+namespace fs = std::filesystem;
+namespace views = std::views;
 
 #endif //DEFS_H

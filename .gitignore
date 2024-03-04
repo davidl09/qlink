@@ -1,5 +1,5 @@
 **/*build*/
-*.db3
+**/*.db3
 **/qlink
 # Prerequisites
 *.d

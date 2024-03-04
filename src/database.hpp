@@ -15,12 +15,14 @@ class Database {
 public:
     Database(const std::string& dbFile);
 
-    bool addUser(const nlo::json& userData);
-    bool checkLogin(const std::string& email, const std::string& passHash);
+    bool addURL(const std::string& longURL, const std::string& shortURL);
+    bool urlExists(const std::string& urlHash);
+    std::string getURL(const std::string& shortURL);
 
 private:
     sqlpp::sqlite3::connection_config config;
     sqlpp::sqlite3::connection db;
+    std::mutex dbMutex;
 };
 
 

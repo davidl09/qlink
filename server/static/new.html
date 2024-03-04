@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add URL Form</title>
+</head>
+<body>
+<h1>Add URL</h1>
+<form id="urlForm">
+    <label for="urlInput">Enter URL:</label><br>
+    <input type="text" id="urlInput" name="urlInput"><br><br>
+    <button type="submit">Submit</button>
+</form>
+<div id="result"></div>
+
+<script src="addURL.js"></script>
+<script>
+    document.getElementById("urlForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        var urlInput = document.getElementById("urlInput").value;
+
+        addURL(urlInput)
+            .then(response => response.json())
+            .then(data => {
+                // Print the returned URL
+                document.getElementById("result").innerText = "Your shortened URL:  " + data[1];
+            })
+            .catch(error => {
+                // Handle errors
+                console.error("Error adding URL:", error);
+                document.getElementById("result").innerText = "Error adding URL. Please try again.";
+            });
+    });
+</script>
+</body>
+</html>
