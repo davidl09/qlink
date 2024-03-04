@@ -9,9 +9,25 @@
 #include <string>
 
 webServer::webServer()
-    : db("database.db3"){
+    : db("database.db3", "schema.sql"){
+
+    CROW_ROUTE(app, "/")([](response& response) {
+        response.set_static_file_info("static/new.html");
+        response.end();
+    });
 
     CROW_ROUTE(app, "/<string>").methods(HTTPMethod::GET)([this](const request& request, response& response, const std::string& urlHash) {
+        auto serveStatic = [this](std::string str, crow::response& response) {
+            auto maybeStaticFile = "./static/" + str;
+            if (fs::exists(maybeStaticFile)) {
+                response.set_static_file_info(maybeStaticFile);
+                response.code = OK;
+                response.end();
+            }
+        };
+
+        serveStatic(urlHash, response);
+
         if (urlCache.contains(urlHash)) {
             response.redirect(urlCache[urlHash]);
             response.end();

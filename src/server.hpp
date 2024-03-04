@@ -16,13 +16,14 @@ public:
 
     void run(int port, LogLevel logging = LogLevel::Debug);
     void run_async(int port, LogLevel logging = LogLevel::Debug);
+
+    static std::string readFileToString(const std::string& filename);
 private:
     crow::SimpleApp app;
     Database db;
     std::unordered_map<std::string, std::string> urlCache;
 
     static std::string sha256Hash(const std::string& str);
-    static std::string readFileToString(const std::string& filename);
     static std::string hashURL(const std::string& longUrl);
 
 };
