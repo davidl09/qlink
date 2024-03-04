@@ -20,7 +20,7 @@ form {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     max-width: 400px;
-    width: 100%;
+    width: 90%;
 }
 
 label {
@@ -54,4 +54,17 @@ button[type="submit"]:hover {
     margin-top: 20px;
     font-size: 18px;
     color: #333;
+}
+
+/* Media queries for responsive design */
+@media only screen and (min-width: 600px) {
+    form {
+        width: 70%;
+    }
+}
+
+@media only screen and (min-width: 900px) {
+    form {
+        width: 50%;
+    }
 }
