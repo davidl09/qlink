@@ -46,7 +46,10 @@ webServer::webServer()
 
     });
 
-    CROW_ROUTE(app, "/createURL").methods(HTTPMethod::POST)([this](const request& request, response& response) {
+    CROW_ROUTE(app, "/createURL")
+    .methods(HTTPMethod::POST)
+    .CROW_MIDDLEWARES(app, IpFreqGuard)
+    ([this](const request& request, response& response){
         auto data = nlo::json::parse(request.body);
         if (!data.contains("url")) { //check request
             response.code = BAD_REQUEST;
@@ -124,7 +127,11 @@ std::string webServer::hashURL(const std::string& longUrl) {
 }
 
 void webServer::run(const int port, LogLevel logging) {
-    app.port(port).multithreaded().loglevel(logging).run();
+    app.port(port).multithreaded()
+#ifdef CROW_ENABLE_COMPRESSION
+    .use_compression(compression::algorithm::GZIP)
+#endif
+    .loglevel(logging).run();
 }
 
 webServer::~webServer() {
@@ -134,4 +141,42 @@ webServer::~webServer() {
         }
     }
 }
+
+void webServer::IpFreqGuard::before_handle(const request& request, response& response, context& context, detail::context<IpFreqGuard>&) {
+    const auto ip = ipFromStr(request.remote_ip_address);
+    const auto now = chrono::time_point_cast<chrono::seconds>(chrono::system_clock::now());
+    context.ipAddresses[ip].push_front(now);
+
+    for (auto it = context.ipAddresses[ip].rbegin(); it != context.ipAddresses[ip].rend() && now - *it > 1h; ++it) {
+        context.ipAddresses[ip].pop_back();
+    }
+
+    if (context.ipAddresses[ip].size() > MAX_REQ_PER_HOUR) {
+        response.code = FORBIDDEN;
+        response.end();
+    }
+}
+
+uint32_t webServer::IpFreqGuard::ipFromStr(const std::string& ip) {
+    std::vector<uint32_t> parts;
+    std::stringstream ss{ip};
+    std::string part;
+
+    while(std::getline(ss, part, '.')) {
+        parts.push_back(std::stoi(part));
+    }
+
+    if (parts.size() != 4) return 0;
+
+    uint32_t res = 0;
+    for (auto i = 0; i < parts.size(); ++i) {
+        if (parts[i] > 255) {
+            return 0;
+        }
+        res |= (parts[i] << (8 * (3 - i)));
+    }
+    return res;
+}
+
+
 

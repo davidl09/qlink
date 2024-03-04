@@ -15,5 +15,5 @@ int main(int argc, char *argv[]) {
     }
     else std::cout << "No port specified, defaulting to 8080\n";
     webServer server;
-    server.run(port, LogLevel::INFO);
+    server.run(port, LogLevel::Info);
 }
