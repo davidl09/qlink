@@ -36,9 +36,26 @@ document.getElementById("urlForm").addEventListener("submit", function(event) {
                 // Make the anchor open in a new tab
                 anchor.target = "_blank";
 
+                const copyButton = document.createElement("button");
+                copyButton.innerText = "Copy to Clipboard";
+                copyButton.style.backgroundColor = "#f0f0f0"; // Light gray
+                copyButton.addEventListener("click", function() {
+                    // Copy URL to clipboard
+                    navigator.clipboard.writeText(anchor.href)
+                        .then(() => {
+                            console.log('URL copied to clipboard');
+                            alert('URL copied to clipboard');
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy URL: ', err);
+                            alert('Failed to copy URL');
+                        });
+                });
+
                 // Append the anchor to the result element
                 document.getElementById("result").innerHTML = '';
                 document.getElementById("result").appendChild(anchor);
+                document.getElementById("result").appendChild(copyButton);
             })
             .catch(error => {
                 // Handle errors
