@@ -17,6 +17,19 @@ function isValidURL(url) {
     return true;
 }
 
+function isUrlAvailable(url) {
+    return fetch("/isavail", {
+        method: "POST",
+        body: JSON.stringify({
+            customUrl: url
+        })
+    })
+        .then(response => response.json())
+        .then(data => data[1]);
+
+
+}
+
 document.getElementById("urlForm").addEventListener("submit", function(event) {
     event.preventDefault();
     const urlInput = document.getElementById("urlInput").value;
@@ -38,13 +51,12 @@ document.getElementById("urlForm").addEventListener("submit", function(event) {
 
                 const copyButton = document.createElement("button");
                 copyButton.innerText = "Copy to Clipboard";
-                copyButton.style.backgroundColor = "#f0f0f0"; // Light gray
+                copyButton.className = "copyButton";
                 copyButton.addEventListener("click", function() {
                     // Copy URL to clipboard
                     navigator.clipboard.writeText(anchor.href)
                         .then(() => {
-                            console.log('URL copied to clipboard');
-                            alert('URL copied to clipboard');
+                            copyButton.innerText = "Copied!";
                         })
                         .catch(err => {
                             console.error('Failed to copy URL: ', err);

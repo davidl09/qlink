@@ -63,6 +63,65 @@ webServer::webServer()
         response.code = OK;
         response.write(to_string(nlo::json({"url", "/" + hashedURL})));
         response.end();
+
+    });
+
+    CROW_ROUTE(app, "/createCustom")
+    .methods(HTTPMethod::Post)
+    .CROW_MIDDLEWARES(app, IpFreqGuard)
+    ([this](const request& request, response& response){
+        auto data = nlo::json::parse(request.body);
+
+        if (not data.contains("url") or not data.contains("customUrl")) {
+            response.code = BAD_REQUEST;
+            response.end("There is data missing from the request");
+        }
+
+        std::string url{data.at("url")}, customUrl{data.at("customUrl")};
+
+        if (customUrl.length() > 8) {
+            response.code = BAD_REQUEST;
+            response.end("Custom URL length must not exceed 8 characters");
+        }
+
+        if (db.urlExists(customUrl)) {
+            response.code = BAD_REQUEST;
+            response.end("The requested URL already exists");
+        }
+
+        try {
+            db.addURL(url, customUrl);
+        }
+        catch (...) {
+            response.code = 200;
+            response.end("There was an error adding your url, please contact customer support");
+        }
+
+        response.code = OK;
+        response.end(to_string(data));
+    });
+
+    CROW_ROUTE(app, "/isavail")
+    .methods(HTTPMethod::Post)
+    ([this](const request& request, crow::response& response) {
+        nlo::json data;
+
+        auto respondBadReq = [this, &response](const std::string& message) {
+            response.code = BAD_REQUEST;
+            response.end(message);
+        };
+
+        try {
+            data = nlo::json::parse(request.body);
+            if (not data.contains("customUrl")) throw;
+        }
+        catch (nlo::json::parse_error& e) {
+            respondBadReq(e.what());
+        }
+
+        response.code = OK;
+        const auto status = not db.urlExists(data.at("customUrl"));
+        response.end(to_string(nlo::json({"available", status})));
     });
 
 }
