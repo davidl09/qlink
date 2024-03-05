@@ -9,7 +9,7 @@
 </head>
 <body>
 <h1>Shorten URL</h1>
-<form id="urlForm">
+<form id="urlForm" method="post" onsubmit="submitURL(event)">
     <label for="urlInput"></label><br>
     <input type="text" id="urlInput" name="urlInput" placeholder="https://mylongurl.com"><br><br>
     <button type="submit">Submit</button>

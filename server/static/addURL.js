@@ -30,7 +30,7 @@ function isUrlAvailable(url) {
 
 }
 
-document.getElementById("urlForm").addEventListener("submit", function(event) {
+function submitURL(event) {
     event.preventDefault();
     const urlInput = document.getElementById("urlInput").value;
     if (!isValidURL(urlInput)) {
@@ -75,4 +75,4 @@ document.getElementById("urlForm").addEventListener("submit", function(event) {
                 document.getElementById("result").innerText = "Error adding URL. Please try again.";
             });
     }
-});
+}
