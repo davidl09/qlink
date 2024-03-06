@@ -8,12 +8,15 @@
 </head>
 <body>
 <h1>Shorten URL</h1>
-<form id="urlForm" onsubmit="submitURL(event)">
+<form id="urlForm" onsubmit="event.preventDefault();submitURL(event)">
     <label for="urlInput"></label><br>
     <input type="text" id="urlInput" name="urlInput" placeholder="https://mylongurl.com"><br><br>
     <button type="submit">Submit</button>
 </form>
 <div id="result"></div>
+<div>
+    <a href="custom.html">Customize your own URL!</a>
+</div>
 <script src="addURL.js"></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8836816845637765"
         crossorigin="anonymous"></script>

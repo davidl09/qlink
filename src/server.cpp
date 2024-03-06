@@ -16,32 +16,6 @@ webServer::webServer()
         response.end();
     });
 
-    CROW_ROUTE(app, "/<string>").methods(HTTPMethod::GET)([this](const request& request, response& response, const std::string& urlHash) {
-        const auto maybeStaticFile = CROW_STATIC_DIRECTORY + urlHash;
-        if (fs::exists(maybeStaticFile)) {
-            response.set_static_file_info(maybeStaticFile);
-            response.code = OK;
-            response.end();
-        }
-
-        if (urlCache.contains(urlHash)) {
-            response.redirect(urlCache[urlHash]);
-            response.end();
-        }
-        else {
-            try {
-                const auto url = db.getURL(urlHash);
-                urlCache[urlHash] = url;
-                response.redirect("/" + url);
-                response.end();
-            } catch (std::exception& e) {
-                response.code = NOT_FOUND;
-                response.end("The requested URL does not exist");
-            }
-        }
-
-    });
-
     CROW_ROUTE(app, "/createURL")
     .methods(HTTPMethod::POST)
     .CROW_MIDDLEWARES(app, IpFreqGuard)
@@ -103,7 +77,7 @@ webServer::webServer()
 
     CROW_ROUTE(app, "/isavail")
     .methods(HTTPMethod::Post)
-    ([this](const request& request, crow::response& response) {
+    ([this](const request& request, response& response) {
         nlo::json data;
 
         auto respondBadReq = [this, &response](const std::string& message) {
@@ -121,7 +95,33 @@ webServer::webServer()
 
         response.code = OK;
         const auto status = not db.urlExists(data.at("customUrl"));
-        response.end(to_string(nlo::json({"available", status})));
+        response.end(to_string(nlo::json::object({{"result", status}})));
+    });
+
+    CROW_ROUTE(app, "/q/<string>").methods(HTTPMethod::GET)([this](const request& request, response& response, const std::string& urlHash) {
+        const auto maybeStaticFile = CROW_STATIC_DIRECTORY + urlHash;
+        if (fs::exists(maybeStaticFile)) {
+            response.set_static_file_info(maybeStaticFile);
+            response.code = OK;
+            response.end();
+        }
+
+        if (urlCache.contains(urlHash)) {
+            response.redirect(urlCache[urlHash]);
+            response.end();
+        }
+        else {
+            try {
+                const auto url = db.getURL(urlHash);
+                urlCache[urlHash] = url;
+                response.redirect("/q/" + url);
+                response.end();
+            } catch (std::exception& e) {
+                response.code = NOT_FOUND;
+                response.end("The requested URL does not exist");
+            }
+        }
+
     });
 
 }

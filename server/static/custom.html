@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 80vh;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            padding: 7% 12%;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: fit-content;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .copyButton {
+            border-radius: 3px;
+            color: #adadad;
+            width: fit-content;
+            margin: 10px 0;
+        }
+
+        .copyButton:hover {
+            color: #626b70;
+        }
+    </style>
+</head>
+<body>
+<h1>Custom URL Shortener</h1>
+<form id="urlForm" onsubmit="isUrlAvailable(url)">
+    <label for="customUrl">Custom URL (max 8 characters):</label>
+    <input type="text" id="customUrl" name="customUrl" maxlength="8"  required>
+    <label for="longUrl">Long URL:</label>
+    <input type="text" id="longUrl" name="longUrl" required>
+    <button type="submit">Shorten URL</button>
+</form>
+<div id="result"></div>
+<script src="custom.js"></script>
+</body>
+</html>
