@@ -120,23 +120,25 @@ webServer::webServer()
             response.set_static_file_info(maybeStaticFile);
             response.code = OK;
             response.end();
+            return;
         }
 
         if (urlCache.contains(urlHash)) {
             response.redirect(urlCache[urlHash]);
             response.end();
+            return;
         }
-        else {
-            try {
-                const auto url = db.getURL(urlHash);
-                urlCache[urlHash] = url;
-                response.redirect("/q/" + url);
-                response.end();
-            } catch (std::exception& e) {
-                response.code = NOT_FOUND;
-                response.end("The requested URL does not exist");
-            }
+        try {
+            const auto url = db.getURL(urlHash);
+            urlCache[urlHash] = url;
+            response.redirect("https://qli.ink/q/" + url);
+            response.end();
+            return;
+        } catch (std::exception& e) {
+            response.code = NOT_FOUND;
+            response.end("The requested URL does not exist");
         }
+
 
     });
 
