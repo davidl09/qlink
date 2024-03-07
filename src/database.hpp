@@ -16,7 +16,7 @@ public:
     Database(const std::string& dbFile, const std::string& configFile);
 
     bool addURL(const std::string& longURL, const std::string& shortURL);
-    bool urlExists(const std::string& urlHash);
+    bool urlExists(const std::string& urlHash) noexcept;
     std::string getURL(const std::string& shortURL);
 
 private:

@@ -21,20 +21,18 @@ Database::Database(const std::string& dbFile, const std::string& configFile = ""
 
 std::string Database::getURL(const std::string& shortURL) {
     db::Urls urls;
-    std::scoped_lock lock(dbMutex);
     auto result = db(select(all_of(urls)).from(urls).where(urls.hashStr == shortURL));
     if (result.empty()) throw std::invalid_argument("Requested URL not indexed");
     return result.begin()->url;
 }
 
-bool Database::urlExists(const std::string& urlHash) {
+bool Database::urlExists(const std::string& urlHash) noexcept {
     db::Urls urls;
     return !db(select(all_of(urls)).from(urls).where(urls.hashStr == urlHash)).empty();
 }
 
 bool Database::addURL(const std::string& longURL, const std::string& shortURL) {
     db::Urls urls;
-    std::scoped_lock lock(dbMutex);
     auto result = db(select(all_of(urls)).from(urls).where(urls.hashStr == shortURL));
     for (const auto& r : result) {
         std::cout << r.hashStr << '\n';
@@ -42,6 +40,7 @@ bool Database::addURL(const std::string& longURL, const std::string& shortURL) {
     if (!result.empty()) return false;
 
     try {
+        std::scoped_lock lock(dbMutex);
         db(insert_into(urls).set(urls.url = longURL, urls.hashStr = shortURL));
         return true;
     }

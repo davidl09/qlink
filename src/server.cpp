@@ -131,9 +131,8 @@ webServer::webServer()
         try {
             const auto url = db.getURL(urlHash);
             urlCache[urlHash] = url;
-            response.redirect("https://qli.ink/q/" + url);
+            response.moved("https://qli.ink/q/" + url);
             response.end();
-            return;
         } catch (std::exception& e) {
             response.code = NOT_FOUND;
             response.end("The requested URL does not exist");
