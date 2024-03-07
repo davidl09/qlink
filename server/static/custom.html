@@ -83,14 +83,46 @@
 </head>
 <body>
 <h1>Custom URL Shortener</h1>
-<form id="urlForm" onsubmit="isUrlAvailable(url)">
+<form id="urlForm" action="/createCustom" method="post">
     <label for="customUrl">Custom URL (max 8 characters):</label>
     <input type="text" id="customUrl" name="customUrl" maxlength="8"  required>
     <label for="longUrl">Long URL:</label>
-    <input type="text" id="longUrl" name="longUrl" required>
+    <input type="text" id="longUrl" name="url" required>
     <button type="submit">Shorten URL</button>
 </form>
 <div id="result"></div>
+<script async>
+    document.getElementById("urlForm").addEventListener('submit', event => {
+        event.preventDefault();
+
+        const formData = new FormData(event.target);
+        let jsonData = {};
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+
+        fetch("/createCustom", {
+            method: 'POST',
+            body: JSON.stringify(jsonData)
+        })
+            .then(data => data.json())
+            .then(data => {
+                let result = document.getElementById("result");
+                if (data.hasOwnProperty("error")) {
+                    result.innerText = data.error;
+                }
+                else {
+                    const anchor = document.createElement("a");
+                    anchor.href = "https://qli.ink/q/" + data.customUrl;
+                    anchor.innerText = "Access your custom link here!";
+                    result.appendChild(anchor);
+                }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
 <script src="custom.js"></script>
 </body>
 </html>

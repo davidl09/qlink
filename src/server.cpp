@@ -45,33 +45,49 @@ webServer::webServer()
     .CROW_MIDDLEWARES(app, IpFreqGuard)
     ([this](const request& request, response& response){
         auto data = nlo::json::parse(request.body);
+        auto body = nlo::json::object();
+        body["error"] = "";
 
         if (not data.contains("url") or not data.contains("customUrl")) {
             response.code = BAD_REQUEST;
-            response.end("There is data missing from the request");
+            body["error"] = "Missing parameters in request";
+            response.end(to_string(body));
+            return;
         }
 
-        std::string url{data.at("url")}, customUrl{data.at("customUrl")};
+        const std::string url{data.at("url")}, customUrl{data.at("customUrl")};
 
         if (customUrl.length() > 8) {
-            response.code = BAD_REQUEST;
-            response.end("Custom URL length must not exceed 8 characters");
+            response.code = OK;
+            body["error"] = "Custom URL length must not exceed 8 characters";
+            response.end(to_string(body));
+            return;
         }
 
         if (db.urlExists(customUrl)) {
-            response.code = BAD_REQUEST;
-            response.end("The requested URL already exists");
+            response.code = OK;
+            body["error"] = "The requested URL already exists";
+            response.end(to_string(body));
+            return;
         }
 
         try {
-            db.addURL(url, customUrl);
+            if (!db.addURL(url, customUrl)) {
+                response.code = OK;
+                body["error"] = "The requested url already exists";
+                response.end(to_string(body));
+                return;
+            }
         }
         catch (...) {
-            response.code = 200;
-            response.end("There was an error adding your url, please contact customer support");
+            response.code = INTERNAL_SERVER_ERROR;
+            body["error"] = "There was an error adding your url, please contact support";
+            response.end(to_string(body));
+            return;
         }
 
         response.code = OK;
+
         response.end(to_string(data));
     });
 
