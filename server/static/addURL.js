@@ -31,7 +31,7 @@ function submitURL(event) {
                 const anchor = document.createElement("a");
 
                 // Set the href attribute to the returned URL
-                anchor.href = anchor.innerText = "https://qli.ink/q/" + data[1];
+                anchor.href = anchor.innerText = "https://qli.ink/q" + data[1];
 
                 // Make the anchor open in a new tab
                 anchor.target = "_blank";
